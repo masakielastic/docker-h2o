@@ -1,15 +1,26 @@
 FROM debian:jessie
 
+ENV DEBIAN_FRONTEND noninteractive
+ENV H2O_VERSION 1.5.0-beta4
+
 RUN apt-get update && apt-get install -y ca-certificates \
- git build-essential cmake openssl libssl-dev libyaml-dev \
-	--no-install-recommends \
-  && rm -rf /var/lib/apt/lists/*
+    curl build-essential cmake openssl libssl-dev \
+    libyaml-dev --no-install-recommends \
+    && rm -rf /var/lib/apt/lists/*
 
-RUN git clone -q https://github.com/h2o/h2o.git --depth 1    
-WORKDIR /h2o
+RUN curl -L "https://github.com/h2o/h2o/archive/v$H2O_VERSION.tar.gz" -o h2o.tar.gz
+RUN tar xfz h2o.tar.gz
+RUN mv "h2o-$H2O_VERSION" /usr/src/h2o
+RUN rm -r h2o.tar.gz
+
+WORKDIR /usr/src/h2o
 RUN cmake . && make h2o
+RUN mv h2o /usr/local/bin
 
-EXPOSE 8080
-COPY /h2o.conf /h2o.conf
-COPY /web /app
-CMD ./h2o -c /h2o.conf
+COPY h2o.conf /usr/src/h2o/h2o.conf
+
+RUN mkdir -p /usr/share/h2o/html
+WORKDIR /usr/share/h2o/html
+
+EXPOSE 80
+CMD h2o -c /usr/src/h2o/h2o.conf
