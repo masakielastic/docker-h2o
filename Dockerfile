@@ -1,7 +1,7 @@
 FROM debian:jessie
 
 ENV DEBIAN_FRONTEND noninteractive
-ENV H2O_VERSION 1.5.0-beta4
+ENV H2O_VERSION 1.5.0
 
 RUN apt-get update && apt-get install -y ca-certificates \
     curl build-essential cmake openssl libssl-dev \
@@ -22,5 +22,5 @@ COPY h2o.conf /usr/src/h2o/h2o.conf
 RUN mkdir -p /usr/share/h2o/html
 WORKDIR /usr/share/h2o/html
 
-EXPOSE 80
+EXPOSE 80 443
 CMD h2o -c /usr/src/h2o/h2o.conf
