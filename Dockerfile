@@ -1,7 +1,7 @@
 FROM debian:jessie
 
 ENV DEBIAN_FRONTEND noninteractive
-ENV H2O_VERSION 1.5.0
+ENV H2O_VERSION 1.5.4
 
 RUN apt-get update && apt-get install -y ca-certificates \
     curl build-essential cmake openssl libssl-dev \
